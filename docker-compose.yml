@@ -1,0 +1,32 @@
+version: '3'
+
+volumes:
+  pgdata:
+    driver: local
+
+services:
+#  app:
+#    image: 'docker-springboot-postgres:latest'
+#    ports:
+#      - "8080:8080"
+#    build:
+#      context: .
+#    container_name: toyswap
+#    depends_on:
+#      - postgres
+#    environment:
+#      - SPRING_DATASOURCE_URL=jdbc:postgresql://localhost:5432/toyswap
+#      - SPRING_DATASOURCE_USERNAME=admin
+#      - SPRING_DATASOURCE_PASSWORD=pass
+#      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+
+  postgres:
+    image: 'postgres:13.1-alpine'
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=pass
+      - POSTGRES_DB=toyswap
+    volumes:
+      - pgdata:/var/lib/postgresql/toyswap

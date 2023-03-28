@@ -5,6 +5,7 @@ create table if not exists app_user
     password        text        not null,
     first_name      varchar(50),
     last_name       varchar(50),
+    role            varchar(50) not null,
     phone_number    varchar(16),
     profile_picture bytea
 );

@@ -1,5 +1,6 @@
-package hr.algebra.toyswap.model;
+package hr.algebra.toyswap.model.user;
 
+import hr.algebra.toyswap.model.post.Post;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -7,7 +8,9 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -47,4 +50,7 @@ public class User {
 
   @Column(name = "profile_picture")
   private byte[] profilePicture;
+
+  @OneToMany(mappedBy = "user")
+  private List<Post> posts;
 }

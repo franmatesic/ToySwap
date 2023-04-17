@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="hr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width">
+    <title>ToySwap</title>
+
+    <link rel="icon" href="/images/logo.png"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css">
+</head>
+<body>
+
+<main class="min-vh-100 d-flex flex-column justify-content-between">
+    <div>
+        <div th:replace="~{fragments/header :: header}"></div>
+
+        <!--TODO: dizajn izgleda objave kad je otvorena-->
+        <div class="d-flex flex-column gap-3 p-5">
+
+            <div class="d-flex gap-2">
+                <span th:text="${post.user.firstName}"></span>
+                <span th:if="${post.user.lastName}" th:text="${post.user.lastName}"></span>
+            </div>
+            <span th:text="${post.user.phoneNumber}"></span>
+
+            <span th:text="${post.title}"></span>
+            <span th:text="${post.description}"></span>
+            <span th:text="${post.condition.croatian}"></span>
+            <span th:text="${post.getFormattedPrice()}"></span>
+            <span th:text="${#temporals.format(post.createdAt, 'dd.MM.yyyy HH:mm:ss')}"></span>
+
+            <th:block th:each="image : ${post.images}">
+                <img class="rounded border" width="200" height="200"
+                     th:src="@{'/post/image/' + ${image.id}}" alt="image"/>
+            </th:block>
+        </div>
+    </div>
+
+    <div th:replace="~{fragments/footer :: footer}"></div>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.7/dist/umd/popper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

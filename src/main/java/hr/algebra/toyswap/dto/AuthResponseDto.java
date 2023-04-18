@@ -1,6 +1,6 @@
 package hr.algebra.toyswap.dto;
 
-import hr.algebra.toyswap.model.user.UserRole;
+import hr.algebra.toyswap.auth.UserDetailsImpl;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -10,11 +10,6 @@ import lombok.Data;
 @AllArgsConstructor
 public class AuthResponseDto {
 
-  private String token;
-  private String email;
-  private String firstName;
-  private String lastName;
-  private UserRole role;
-  private String phoneNumber;
-  private byte[] profilePicture;
+    private String token;
+    private UserDetailsImpl user;
 }

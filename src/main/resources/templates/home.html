@@ -14,33 +14,35 @@
     <div>
         <div th:replace="~{fragments/header :: header}"></div>
 
-        <div class="col-4 mx-auto" sec:authorize="hasAuthority('ADMIN')">
-            <div th:insert="~{fragments/create-post}"></div>
-        </div>
+        <div class="container">
+            <div class="col-4 mx-auto" sec:authorize="hasAuthority('ADMIN')">
+                <div th:insert="~{fragments/create-post}"></div>
+            </div>
 
-        <div class="p-5">
-            <th:block th:each="post : ${posts}">
+            <div class="d-flex">
+                <th:block th:each="post : ${posts}">
 
-                <!--TODO: dizajn izgleda objave na pocetnoj stranici-->
-                <a class="card d-flex flex-column gap-2 p-3 mb-3" th:href="@{'/post/' + ${post.id}}">
+                    <!--TODO: dizajn izgleda objave na pocetnoj stranici-->
+                    <a class="card d-flex flex-column gap-2 p-3 mb-3" th:href="@{'/post/' + ${post.id}}">
 
-                    <div class="d-flex gap-2">
-                        <span th:text="${post.user.firstName}"></span>
-                        <span th:if="${post.user.lastName}" th:text="${post.user.lastName}"></span>
-                    </div>
+                        <div class="d-flex gap-2">
+                            <span th:text="${post.user.firstName}"></span>
+                            <span th:if="${post.user.lastName}" th:text="${post.user.lastName}"></span>
+                        </div>
 
-                    <div class="d-flex gap-3">
-                        <span th:text="${post.title}"></span>
-                        <span class="badge bg-primary" th:text="${post.condition.croatian}"></span>
-                    </div>
-                    <span th:text="${post.getFormattedPrice()}"></span>
-                    <span th:text="${#temporals.format(post.createdAt, 'dd.MM.yyyy HH:mm:ss')}"></span>
+                        <div class="d-flex gap-3">
+                            <span th:text="${post.title}"></span>
+                            <span class="badge bg-primary" th:text="${post.condition.croatian}"></span>
+                        </div>
+                        <span th:text="${post.getFormattedPrice()}"></span>
+                        <span th:text="${#temporals.format(post.createdAt, 'dd.MM.yyyy HH:mm:ss')}"></span>
 
-                    <img class="rounded border" width="200" height="200" th:src="@{'/post/image/' + ${post.images.get(0).id}}"
-                         alt="image"/>
-                </a>
+                        <img class="rounded border" width="200" height="200" th:src="@{'/post/image/' + ${post.images.get(0).id}}"
+                             alt="image"/>
+                    </a>
 
-            </th:block>
+                </th:block>
+            </div>
         </div>
     </div>
 

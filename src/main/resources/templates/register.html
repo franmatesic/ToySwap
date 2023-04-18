@@ -14,69 +14,72 @@
     <div>
         <div th:replace="~{fragments/header :: header}"></div>
 
-        <div class="d-flex flex-column align-items-center p-5">
+        <div class="container">
 
-            <img class="rounded-4 shadow" height="196" src="../static/images/logo.png" th:src="@{/images/logo.png}" alt="logo"/>
+            <div class="d-flex flex-column align-items-center p-5">
 
-            <div class="col-3 mt-5 card p-5">
-                <form method="post" th:object="${register}" th:action="@{/register}" enctype="multipart/form-data">
+                <img class="rounded-4 shadow" height="196" src="../static/images/logo.png" th:src="@{/images/logo.png}" alt="logo"/>
 
-                    <div class="d-flex gap-1 flex-column align-items-center mt-3">
-                        <label for="profilePictureInput">
-                            <img class="border border-2 rounded-circle" src="../static/images/profile.png"
-                                 th:src="@{/images/profile.png}"
-                                 alt="profile picture" id="profilePicture" width="128" height="128"/>
-                        </label>
-                        Profile picture
-                        <input accept="image/*" type="file" id="profilePictureInput" style="display: none" th:field="*{profilePicture}"/>
+                <div class="col-5 mt-5 card p-5">
+                    <form method="post" th:object="${register}" th:action="@{/register}" enctype="multipart/form-data">
 
-                        <script>
-                            const input = document.getElementById('profilePictureInput');
-                            input.oninput = () => {
-                                if (input.files.length > 0) {
-                                    document.getElementById('profilePicture').src = window.URL.createObjectURL(input.files[0]);
+                        <div class="d-flex gap-1 flex-column align-items-center mt-3">
+                            <label for="profilePictureInput">
+                                <img class="border border-2 rounded-circle" src="../static/images/profile.png"
+                                     th:src="@{/images/profile.png}"
+                                     alt="profile picture" id="profilePicture" width="128" height="128"/>
+                            </label>
+                            Profile picture
+                            <input accept="image/*" type="file" id="profilePictureInput" style="display: none" th:field="*{profilePicture}"/>
+
+                            <script>
+                                const input = document.getElementById('profilePictureInput');
+                                input.oninput = () => {
+                                    if (input.files.length > 0) {
+                                        document.getElementById('profilePicture').src = window.URL.createObjectURL(input.files[0]);
+                                    }
                                 }
-                            }
-                        </script>
-                    </div>
+                            </script>
+                        </div>
 
-                    <div class="mt-3">
-                        <label for="registerEmail" class="form-label">Email</label>
-                        <input type="text" class="form-control" id="registerEmail" name="email" th:field="*{email}">
-                        <p class="text-danger mt-0" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></p>
-                    </div>
+                        <div class="mt-3">
+                            <label for="registerEmail" class="form-label">Email</label>
+                            <input type="text" class="form-control" id="registerEmail" name="email" th:field="*{email}">
+                            <p class="text-danger mt-0" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></p>
+                        </div>
 
-                    <div class="mt-3">
-                        <label for="registerPassword" class="form-label">Lozinka</label>
-                        <input type="password" class="form-control" id="registerPassword" name="password" th:field="*{password}">
-                        <p class="text-danger mt-0" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></p>
-                    </div>
+                        <div class="mt-3">
+                            <label for="registerPassword" class="form-label">Lozinka</label>
+                            <input type="password" class="form-control" id="registerPassword" name="password" th:field="*{password}">
+                            <p class="text-danger mt-0" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></p>
+                        </div>
 
-                    <div class="mt-3">
-                        <label for="firstName" class="form-label">Ime</label>
-                        <input type="text" class="form-control" id="firstName" name="firstName" th:field="*{firstName}">
-                        <p class="text-danger mt-0" th:if="${#fields.hasErrors('firstName')}" th:errors="*{firstName}"></p>
-                    </div>
+                        <div class="mt-3">
+                            <label for="firstName" class="form-label">Ime</label>
+                            <input type="text" class="form-control" id="firstName" name="firstName" th:field="*{firstName}">
+                            <p class="text-danger mt-0" th:if="${#fields.hasErrors('firstName')}" th:errors="*{firstName}"></p>
+                        </div>
 
-                    <div class="mt-3">
-                        <label for="lastName" class="form-label">Prezime</label>
-                        <input type="text" class="form-control" id="lastName" name="lastName" th:field="*{lastName}">
-                        <p class="text-danger mt-0" th:if="${#fields.hasErrors('lastName')}" th:errors="*{lastName}"></p>
-                    </div>
+                        <div class="mt-3">
+                            <label for="lastName" class="form-label">Prezime</label>
+                            <input type="text" class="form-control" id="lastName" name="lastName" th:field="*{lastName}">
+                            <p class="text-danger mt-0" th:if="${#fields.hasErrors('lastName')}" th:errors="*{lastName}"></p>
+                        </div>
 
-                    <div class="mt-3">
-                        <label for="phoneNumber" class="form-label">Broj telefona</label>
-                        <input type="text" class="form-control" id="phoneNumber" name="phoneNumber" th:field="*{phoneNumber}">
-                        <p class="text-danger mt-0" th:if="${#fields.hasErrors('phoneNumber')}" th:errors="*{phoneNumber}"></p>
-                    </div>
+                        <div class="mt-3">
+                            <label for="phoneNumber" class="form-label">Broj telefona</label>
+                            <input type="text" class="form-control" id="phoneNumber" name="phoneNumber" th:field="*{phoneNumber}">
+                            <p class="text-danger mt-0" th:if="${#fields.hasErrors('phoneNumber')}" th:errors="*{phoneNumber}"></p>
+                        </div>
 
-                    <button class="btn btn-primary w-100 mt-3" type="submit">Registriraj se</button>
+                        <button class="btn btn-primary w-100 mt-3" type="submit">Registriraj se</button>
 
-                    <div class="float-end mt-3">
-                        <span>Već imaš račun?</span>
-                        <a href="/login">Prijavi se</a>
-                    </div>
-                </form>
+                        <div class="float-end mt-3">
+                            <span>Već imaš račun?</span>
+                            <a href="/login">Prijavi se</a>
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
     </div>

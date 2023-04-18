@@ -14,25 +14,28 @@
     <div>
         <div th:replace="~{fragments/header :: header}"></div>
 
-        <!--TODO: dizajn izgleda objave kad je otvorena-->
-        <div class="d-flex flex-column gap-3 p-5">
+        <div class="container">
 
-            <div class="d-flex gap-2">
-                <span th:text="${post.user.firstName}"></span>
-                <span th:if="${post.user.lastName}" th:text="${post.user.lastName}"></span>
+            <!--TODO: dizajn izgleda objave kad je otvorena-->
+            <div class="d-flex flex-column gap-3 p-5">
+
+                <div class="d-flex gap-2">
+                    <span th:text="${post.user.firstName}"></span>
+                    <span th:if="${post.user.lastName}" th:text="${post.user.lastName}"></span>
+                </div>
+                <span th:text="${post.user.phoneNumber}"></span>
+
+                <span th:text="${post.title}"></span>
+                <span th:text="${post.description}"></span>
+                <span th:text="${post.condition.croatian}"></span>
+                <span th:text="${post.getFormattedPrice()}"></span>
+                <span th:text="${#temporals.format(post.createdAt, 'dd.MM.yyyy HH:mm:ss')}"></span>
+
+                <th:block th:each="image : ${post.images}">
+                    <img class="rounded border" width="200" height="200"
+                         th:src="@{'/post/image/' + ${image.id}}" alt="image"/>
+                </th:block>
             </div>
-            <span th:text="${post.user.phoneNumber}"></span>
-
-            <span th:text="${post.title}"></span>
-            <span th:text="${post.description}"></span>
-            <span th:text="${post.condition.croatian}"></span>
-            <span th:text="${post.getFormattedPrice()}"></span>
-            <span th:text="${#temporals.format(post.createdAt, 'dd.MM.yyyy HH:mm:ss')}"></span>
-
-            <th:block th:each="image : ${post.images}">
-                <img class="rounded border" width="200" height="200"
-                     th:src="@{'/post/image/' + ${image.id}}" alt="image"/>
-            </th:block>
         </div>
     </div>
 

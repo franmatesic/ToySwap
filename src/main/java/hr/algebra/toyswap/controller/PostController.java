@@ -52,9 +52,9 @@ public class PostController {
                         .findByEmail(principal.getName())
                         .orElseThrow(() -> new RuntimeException("User not found"));
 
-        final var tags = createPostDto.getTags().stream()
-                .map(tag -> tagRepository.findById(tag.getId()).orElseThrow(() -> new RuntimeException("Tag not found")))
-                .toList();
+//        final var tags = createPostDto.getTags().stream()
+//                .map(tag -> tagRepository.findById(tag.getId()).orElseThrow(() -> new RuntimeException("Tag not found")))
+//                .toList();
 
         final var post =
                 Post.builder()
@@ -63,7 +63,7 @@ public class PostController {
                         .description(createPostDto.getDescription())
                         .condition(createPostDto.getCondition())
                         .price(createPostDto.getPrice())
-                        .tags(tags)
+//                        .tags(tags)
                         .build();
         final var savedPost = postRepository.save(post);
 

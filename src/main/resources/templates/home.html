@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="hr" xmlns:sec="http://www.w3.org/1999/xhtml">
+<html lang="hr" xmlns:sec="http://www.w3.org/1999/xhtml" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width">
@@ -19,25 +19,25 @@
                 <div th:insert="~{fragments/create-post}"></div>
             </div>
 
-            <div class="d-flex">
-                <th:block th:each="post : ${posts}">
+            <div class="d-flex m-4 gap-2">
+                <th:block th:each="post : ${posts}" class="m-3">
 
                     <!--TODO: dizajn izgleda objave na pocetnoj stranici-->
-                    <a class="card d-flex flex-column gap-2 p-3 mb-3" th:href="@{'/post/' + ${post.id}}">
+                    <a class="card d-flex flex-column gap-2 p-3 m-2 text-decoration-none text-dark" th:href="@{'/post/' + ${post.id}}">
 
                         <div class="d-flex gap-2">
-                            <span th:text="${post.user.firstName}"></span>
-                            <span th:if="${post.user.lastName}" th:text="${post.user.lastName}"></span>
+                            <span th:text="${post.user.firstName}">Maja</span>
+                            <span th:if="${post.user.lastName}" th:text="${post.user.lastName}">Majic</span>
                         </div>
 
                         <div class="d-flex gap-3">
-                            <span th:text="${post.title}"></span>
-                            <span class="badge bg-primary" th:text="${post.condition.croatian}"></span>
+                            <span class="fs-2 fw-semibold text-dark" th:text="${post.title}">Medo</span>
+                            <span class="badge fs-5 fw-medium ms-4" style="background-color: #6f42c1" th:text="${post.condition.croatian}">Kratko korišteno</span>
                         </div>
-                        <span th:text="${post.getFormattedPrice()}"></span>
-                        <span th:text="${#temporals.format(post.createdAt, 'dd.MM.yyyy HH:mm:ss')}"></span>
+                        <span class="fw-semibold" th:text="${post.getFormattedPrice()}">100.00$</span>
+                        <span th:text="${#temporals.format(post.createdAt, 'dd.MM.yyyy HH:mm')}">12.12.2002</span>
 
-                        <img class="rounded border" width="200" height="200" th:src="@{'/post/image/' + ${post.images.get(0).id}}"
+                        <img class="rounded border my-2 mx-3" width="250" height="250" th:src="@{'/post/image/' + ${post.images.get(0).id}}"
                              alt="image"/>
                     </a>
 

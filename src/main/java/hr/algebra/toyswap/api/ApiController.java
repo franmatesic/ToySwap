@@ -43,9 +43,4 @@ public class ApiController {
         final var body = posts.stream().map(postConverter::convert).toList();
         return ResponseEntity.ok(body);
     }
-
-    @GetMapping("/test")
-    public ResponseEntity<String> getTest() {
-        return ResponseEntity.ok("Hello World!");
-    }
 }

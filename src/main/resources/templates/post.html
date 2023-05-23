@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="hr" xmlns:th="http://www.w3.org/1999/xhtml">
+<html lang="hr" xmlns:th="http://www.w3.org/1999/xhtml" xmlns:sec="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width">
@@ -16,20 +16,20 @@
 
         <div class="container">
 
-            <!--TODO: dizajn izgleda objave kad je otvorena-->
             <div class="d-flex gap-3 p-5">
 
                 <div id="carouselExampleIndicators" class="carousel slide">
                     <div class="carousel-indicators">
-                        <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+                        <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active" aria-current="true"
+                                aria-label="Slide 1"></button>
                         <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1" aria-label="Slide 2"></button>
                         <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2" aria-label="Slide 3"></button>
                     </div>
                     <div class="carousel-inner">
                         <th:block th:each="image,i : ${post.images}">
                             <div th:class="'carousel-item ' + ${i.index == 0 ? 'active' : ''}">
-                            <img class="rounded border" width="300" height="300"
-                                 th:src="@{'/post/image/' + ${image.id}}" alt="image"/>
+                                <img class="rounded border" width="300" height="300"
+                                     th:src="@{'/post/image/' + ${image.id}}" alt="image"/>
                             </div>
                         </th:block>
                     </div>
@@ -42,8 +42,6 @@
                         <span class="visually-hidden">Next</span>
                     </button>
                 </div>
-
-
 
                 <div class="d-flex flex-column lh-lg">
                     <span class="fs-1" th:text="${post.title}">Medo</span>
@@ -59,10 +57,19 @@
                         <span th:text="${post.user.phoneNumber}"> +385 98 345 765</span>
                     </div>
 
+                    <div class="d-flex align-items-center gap-2 my-2">
+                        <span class="badge text-bg-primary" th:each="tag : ${post.tags}" th:text="${tag.name}"></span>
+                    </div>
 
                     <span th:text="${#temporals.format(post.createdAt, 'dd.MM.yyyy HH:mm:ss')}">Objavljeno: 12.12.2022</span>
                 </div>
             </div>
+
+            <form method="post" th:object="${newMessage}" th:action="@{'/messages/new/' + ${post.user.id}}" class="d-flex gap-2 p-2"
+                  sec:authorize="isAuthenticated()">
+                <input class="form-control me-1" name="content" th:field="*{content}" placeholder="Poruka"/>
+                <button type="submit" class="btn btn-primary text-light">Pošalji</button>
+            </form>
         </div>
     </div>
 

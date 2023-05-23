@@ -1,12 +1,14 @@
 package hr.algebra.toyswap.controller;
 
 import hr.algebra.toyswap.dto.CreatePostDto;
+import hr.algebra.toyswap.dto.MessageDto;
 import hr.algebra.toyswap.model.post.Post;
 import hr.algebra.toyswap.model.post.PostImage;
 import hr.algebra.toyswap.repository.PostImageRepository;
 import hr.algebra.toyswap.repository.PostRepository;
 import hr.algebra.toyswap.repository.TagRepository;
 import hr.algebra.toyswap.repository.UserRepository;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.security.Principal;
+import java.util.Objects;
 
 @Controller
 @RequestMapping("/post")
@@ -35,16 +38,24 @@ public class PostController {
         final var post =
                 postRepository.findById(id).orElseThrow(() -> new RuntimeException("Post not found"));
         model.addAttribute("post", post);
+        model.addAttribute("newMessage", MessageDto.builder().build());
         return "post";
     }
 
-    @PostMapping("/create")
-    public String createPost(
+    @GetMapping("/new")
+    public String getNewPost(Model model) {
+        model.addAttribute("createPost", CreatePostDto.builder().build());
+        model.addAttribute("tags", tagRepository.findAll());
+        return "create-post";
+    }
+
+    @PostMapping("/new")
+    public String newPost(
             @Valid @ModelAttribute("createPost") CreatePostDto createPostDto,
             BindingResult result,
             Principal principal) {
         if (result.hasErrors()) {
-            return "fragments/create-post";
+            return "create-post";
         }
 
         final var user =
@@ -52,9 +63,9 @@ public class PostController {
                         .findByEmail(principal.getName())
                         .orElseThrow(() -> new RuntimeException("User not found"));
 
-//        final var tags = createPostDto.getTags().stream()
-//                .map(tag -> tagRepository.findById(tag.getId()).orElseThrow(() -> new RuntimeException("Tag not found")))
-//                .toList();
+        final var tags = createPostDto.getTags().stream()
+                .map(tag -> tagRepository.findById(tag).orElseThrow(() -> new RuntimeException("Tag not found")))
+                .toList();
 
         final var post =
                 Post.builder()
@@ -63,7 +74,7 @@ public class PostController {
                         .description(createPostDto.getDescription())
                         .condition(createPostDto.getCondition())
                         .price(createPostDto.getPrice())
-//                        .tags(tags)
+                        .tags(tags)
                         .build();
         final var savedPost = postRepository.save(post);
 
@@ -79,6 +90,14 @@ public class PostController {
         }
 
         return "redirect:/home";
+    }
+
+    @PostMapping("/buy/{id}")
+    public String buy(@PathVariable("id") Long id, HttpServletRequest request, Principal principal) {
+        if (Objects.isNull(principal)) {
+            return "redirect:/login";
+        }
+        return "post";
     }
 
     @GetMapping("/image/{id}")

@@ -34,7 +34,7 @@ public class CreatePostDto {
     @PositiveOrZero(message = "Cijena mora biti pozitivan broj")
     private BigDecimal price;
 
-    private List<TagDto> tags;
+    private List<Long> tags;
 
     @NotEmpty(message = "Barem jedna slika je obavezna")
     private List<MultipartFile> images;

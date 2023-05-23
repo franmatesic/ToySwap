@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="hr">
+<html lang="hr" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width">
@@ -17,24 +17,51 @@
         <div class="container">
 
             <!--TODO: dizajn izgleda objave kad je otvorena-->
-            <div class="d-flex flex-column gap-3 p-5">
+            <div class="d-flex gap-3 p-5">
 
-                <div class="d-flex gap-2">
-                    <span th:text="${post.user.firstName}"></span>
-                    <span th:if="${post.user.lastName}" th:text="${post.user.lastName}"></span>
+                <div id="carouselExampleIndicators" class="carousel slide">
+                    <div class="carousel-indicators">
+                        <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+                        <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1" aria-label="Slide 2"></button>
+                        <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2" aria-label="Slide 3"></button>
+                    </div>
+                    <div class="carousel-inner">
+                        <th:block th:each="image,i : ${post.images}">
+                            <div th:class="'carousel-item ' + ${i.index == 0 ? 'active' : ''}">
+                            <img class="rounded border" width="300" height="300"
+                                 th:src="@{'/post/image/' + ${image.id}}" alt="image"/>
+                            </div>
+                        </th:block>
+                    </div>
+                    <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Previous</span>
+                    </button>
+                    <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Next</span>
+                    </button>
                 </div>
-                <span th:text="${post.user.phoneNumber}"></span>
 
-                <span th:text="${post.title}"></span>
-                <span th:text="${post.description}"></span>
-                <span th:text="${post.condition.croatian}"></span>
-                <span th:text="${post.getFormattedPrice()}"></span>
-                <span th:text="${#temporals.format(post.createdAt, 'dd.MM.yyyy HH:mm:ss')}"></span>
 
-                <th:block th:each="image : ${post.images}">
-                    <img class="rounded border" width="200" height="200"
-                         th:src="@{'/post/image/' + ${image.id}}" alt="image"/>
-                </th:block>
+
+                <div class="d-flex flex-column lh-lg">
+                    <span class="fs-1" th:text="${post.title}">Medo</span>
+                    <b>Opis:</b>
+                    <span th:text="${post.description}">Plisana igracka medvijedica za dijecu od 3 do 6 godina</span>
+                    <span class="fs-3" th:text="${post.condition.croatian}">Kratko koristeno</span>
+                    <span class="fs-4" th:text="${post.getFormattedPrice()}">100.00 Kn</span>
+
+                    <div class="d-flex gap-2">
+                        <span th:text="${post.user.firstName}">Maja</span>
+                        <span th:if="${post.user.lastName}" th:text="${post.user.lastName}">Majic</span>
+                        <span> | </span>
+                        <span th:text="${post.user.phoneNumber}"> +385 98 345 765</span>
+                    </div>
+
+
+                    <span th:text="${#temporals.format(post.createdAt, 'dd.MM.yyyy HH:mm:ss')}">Objavljeno: 12.12.2022</span>
+                </div>
             </div>
         </div>
     </div>

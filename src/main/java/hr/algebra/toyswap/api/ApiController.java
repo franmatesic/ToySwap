@@ -1,11 +1,10 @@
 package hr.algebra.toyswap.api;
 
 import hr.algebra.toyswap.converter.PostConverter;
-import hr.algebra.toyswap.dto.AuthResponseDto;
-import hr.algebra.toyswap.dto.LoginDto;
-import hr.algebra.toyswap.dto.PostDto;
-import hr.algebra.toyswap.dto.RegisterDto;
+import hr.algebra.toyswap.converter.TagConverter;
+import hr.algebra.toyswap.dto.*;
 import hr.algebra.toyswap.repository.PostRepository;
+import hr.algebra.toyswap.repository.TagRepository;
 import hr.algebra.toyswap.service.ApiAuthService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -22,8 +21,12 @@ import java.util.List;
 public class ApiController {
 
     private final PostRepository postRepository;
+    private final TagRepository tagRepository;
+
     private final ApiAuthService apiAuthService;
+
     private final PostConverter postConverter;
+    private final TagConverter tagConverter;
 
     @PostMapping("/login")
     public ResponseEntity<AuthResponseDto> login(@Valid @RequestBody LoginDto loginDto) {
@@ -41,6 +44,13 @@ public class ApiController {
     public ResponseEntity<List<PostDto>> getPosts() {
         final var posts = postRepository.findAllByDeactivatedAtIsNull();
         final var body = posts.stream().map(postConverter::convert).toList();
+        return ResponseEntity.ok(body);
+    }
+
+    @GetMapping("/tags")
+    public ResponseEntity<List<TagDto>> getTags() {
+        final var tags = tagRepository.findAll();
+        final var body = tags.stream().map(tagConverter::convert).toList();
         return ResponseEntity.ok(body);
     }
 }

@@ -47,17 +47,20 @@
 
                 <div class="d-flex flex-column lh-lg">
                     <span class="fs-1" th:text="${post.title}">Medo</span>
+                    <b>Opis:</b>
                     <span th:text="${post.description}">Plisana igracka medvijedica za dijecu od 3 do 6 godina</span>
                     <span class="fs-3" th:text="${post.condition.croatian}">Kratko koristeno</span>
-                    <span class="fs-4" th:text="${post.getFormattedPrice()}">100.00</span>
+                    <span class="fs-4" th:text="${post.getFormattedPrice()}">100.00 Kn</span>
 
                     <div class="d-flex gap-2">
                         <span th:text="${post.user.firstName}">Maja</span>
                         <span th:if="${post.user.lastName}" th:text="${post.user.lastName}">Majic</span>
+                        <span> | </span>
+                        <span th:text="${post.user.phoneNumber}"> +385 98 345 765</span>
                     </div>
-                    <span th:text="${post.user.phoneNumber}">098 345 765</span>
 
-                    <span th:text="${#temporals.format(post.createdAt, 'dd.MM.yyyy HH:mm:ss')}">12.12.2022</span>
+
+                    <span th:text="${#temporals.format(post.createdAt, 'dd.MM.yyyy HH:mm:ss')}">Objavljeno: 12.12.2022</span>
                 </div>
             </div>
         </div>

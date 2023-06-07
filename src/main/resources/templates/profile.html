@@ -16,16 +16,134 @@
 
         <div class="container">
 
-            <div class="">
+            <div class="d-flex align-items-center gap-5 mt-5">
 
                 <img class="border border-2 rounded-circle" src="../static/images/profile.png"
                      th:src="@{'/profile/image/' + ${profile.id}}"
-                     alt="profile picture" width="128" height="128"/>
+                     alt="profile picture" width="96" height="96"/>
 
-                <span th:text="${profile.firstName}"></span>
-                <span th:text="${profile.lastName}"></span>
-                <span th:text="${profile.phoneNumber}"></span>
+                <div class="row row-cols-2 w-50">
+                    <div class="col fs-5">
+                        Ime
+                    </div>
+                    <div class="col">
+                        <span class="fs-5" th:text="${profile.firstName}"></span>
+                        <span class="fs-5" th:text="${profile.lastName}"></span>
+                    </div>
+                    <div class="col fs-5">
+                        Email
+                    </div>
+                    <div class="col">
+                        <span class="fs-5" th:text="${profile.email}"></span>
+                    </div>
+                    <div class="col fs-5">
+                        Broj telefona
+                    </div>
+                    <div class="col">
+                        <span class="fs-5" th:text="${profile.phoneNumber}"></span>
+                    </div>
+                </div>
             </div>
+
+            <h3 class="mt-5">Dodaj kredite</h3>
+            <div class="row">
+                <div class="col">
+                    <form class="card" method="post" th:action="@{'/profile/credits/10'}">
+                        <button type="submit" class="btn btn-link text-dark fs-4 text-decoration-none bg-warning p-5">Dodaj 10€</button>
+                    </form>
+                </div>
+                <div class="col">
+                    <form class="card" method="post" th:action="@{'/profile/credits/50'}">
+                        <button type="submit" class="btn btn-link text-light fs-4 text-decoration-none bg-success p-5">Dodaj 50€</button>
+                    </form>
+                </div>
+                <div class="col">
+                    <form class="card" method="post" th:action="@{'/profile/credits/100'}">
+                        <button type="submit" class="btn btn-link text-light fs-4 text-decoration-none bg-primary p-5">Dodaj 100€</button>
+                    </form>
+                </div>
+            </div>
+
+            <div class="d-flex justify-content-between align-items-end mt-5">
+                <h3>Kartice</h3>
+                <a href="/profile/card/new">Nova kartica</a>
+            </div>
+            <table class="table table-striped table-hover">
+                <thead>
+                <tr>
+                    <th>Ime</th>
+                    <th>Broj</th>
+                </tr>
+                </thead>
+                <tbody>
+                <th:block th:each="card,i : ${cards}">
+                    <tr>
+                        <td th:text="${card.name}"></td>
+                        <td th:text="${card.getMaskedNumber()}"></td>
+                        <td>
+                            <form method="post" th:action="@{'/profile/card/delete/' + ${card.id}}">
+                                <button type="submit" class="btn btn-link text-danger float-end">Obriši</button>
+                            </form>
+                        </td>
+                    </tr>
+                </th:block>
+                </tbody>
+            </table>
+
+            <h3 class="mt-5">Moje kupnje</h3>
+            <table class="table table-striped table-hover">
+                <thead>
+                <tr>
+                    <th>Naslov</th>
+                    <th>Opis</th>
+                    <th>Cijena</th>
+                    <th>Datum kupnje</th>
+                </tr>
+                </thead>
+                <tbody>
+                <th:block th:each="post,i : ${profile.boughtPosts}">
+                    <tr>
+                        <td th:text="${post.title}"></td>
+                        <td th:text="${post.description}"></td>
+                        <td th:text="${post.getFormattedPrice()}"></td>
+                        <td th:text="${#temporals.format(post.deactivatedAt, 'dd.MM.yyyy HH:mm:ss')}"></td>
+                        <td>
+                            <a th:href="@{'/post/' + ${post.id}}">Link</a>
+                        </td>
+                    </tr>
+                </th:block>
+                </tbody>
+            </table>
+
+            <div class="d-flex justify-content-between align-items-end mt-5">
+                <h3>Moje objave</h3>
+                <a href="/post/new">Nova objava</a>
+            </div>
+            <table class="table table-striped table-hover">
+                <thead>
+                <tr>
+                    <th>Naslov</th>
+                    <th>Opis</th>
+                    <th>Cijena</th>
+                    <th>Datum</th>
+                    <th>Status</th>
+                </tr>
+                </thead>
+                <tbody>
+                <th:block th:each="post,i : ${profile.posts}">
+                    <tr>
+                        <td th:text="${post.title}"></td>
+                        <td th:text="${post.description}"></td>
+                        <td th:text="${post.getFormattedPrice()}"></td>
+                        <td th:text="${#temporals.format(post.createdAt, 'dd.MM.yyyy HH:mm:ss')}"></td>
+                        <td th:text="${post.deactivatedAt == null ? 'Aktivno' : (post.buyer == null ? 'Deaktivirano' : 'Kupljeno')}"></td>
+                        <td>
+                            <a th:href="@{'/post/' + ${post.id}}">Link</a>
+                        </td>
+                    </tr>
+                </th:block>
+                </tbody>
+            </table>
         </div>
     </div>
 

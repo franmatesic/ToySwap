@@ -86,7 +86,15 @@ RESPONSE EXAMPLE
       {
         "name": "BUILDING"
       }
+    ],
+    "imageIds": [
+      1,
+      2
     ]
   }
 ]
 ```
+
+### Postoji jos metoda...
+
+### Sve endpoint metode su u `src/main/.../api/ApiController` klasi

@@ -23,6 +23,7 @@ public class RegisterDto {
   @NotBlank(message = "Ime je obavezno")
   private String firstName;
 
+  @NotBlank(message = "Prezime je obavezno")
   private String lastName;
 
   @NotBlank(message = "Broj telefona je obavezan")

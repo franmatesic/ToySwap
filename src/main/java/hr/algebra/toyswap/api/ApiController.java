@@ -73,6 +73,7 @@ public class ApiController {
     profileService.getImage(user.getId(), response);
   }
 
+  // Napravi novu (fake) karticu
   @PostMapping("/card")
   public ResponseEntity<Void> createCard(
       @Valid @RequestBody CreateCardDto createCardDto, Principal principal) {
@@ -80,12 +81,14 @@ public class ApiController {
     return ResponseEntity.status(HttpStatus.CREATED).build();
   }
 
+  // Obrisi karticu
   @DeleteMapping("/card/{id}")
   public ResponseEntity<Void> deleteCard(@PathVariable("id") Long id) {
     profileService.deleteCreditCard(id);
     return ResponseEntity.noContent().build();
   }
 
+  // Dohvati sve korisnicke kartice
   @GetMapping("/cards")
   public ResponseEntity<List<CreditCardDto>> getCards(Principal principal) {
     final var user =
@@ -105,7 +108,7 @@ public class ApiController {
             .toList());
   }
 
-  // Dodaj kredite na racun
+  // Dodaj (fake) kredite na racun
   @PostMapping("/credits/{value}")
   public ResponseEntity<Void> addCredits(
       @PathVariable("value") Long value, Principal principal, HttpServletRequest request) {
@@ -135,6 +138,7 @@ public class ApiController {
     return ResponseEntity.ok(posts);
   }
 
+  // Dohvati sve kategorije
   @GetMapping("/tags")
   public ResponseEntity<List<TagDto>> getTags() {
     final var tags = tagRepository.findAll();
@@ -142,6 +146,7 @@ public class ApiController {
     return ResponseEntity.ok(body);
   }
 
+  // Dohvati sve objave
   @GetMapping("/posts")
   public ResponseEntity<List<PostDto>> getPosts() {
     final var posts = postRepository.findAllByDeactivatedAtIsNull();
@@ -180,5 +185,14 @@ public class ApiController {
   public ResponseEntity<Void> deletePost(@PathVariable("id") Long id) {
     postService.delete(id);
     return ResponseEntity.noContent().build();
+  }
+
+  // Kupi objavu
+  @PostMapping("/buy/{id}")
+  public ResponseEntity<String> buyPost(
+      @PathVariable("id") Long id, HttpServletRequest request, Principal principal) {
+    final var result = postService.buyPost(id, request, principal);
+    final var response = result.contains("messages") ? "Successful" : "Error";
+    return ResponseEntity.ok(response);
   }
 }

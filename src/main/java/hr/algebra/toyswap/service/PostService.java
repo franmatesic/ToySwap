@@ -10,7 +10,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.security.Principal;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import lombok.RequiredArgsConstructor;
@@ -28,11 +27,9 @@ public class PostService {
   private final UserRepository userRepository;
   private final AuthService authService;
 
-  public void createPost(final CreatePostDto createPostDto, final Principal principal) {
+  public Post createPost(final CreatePostDto createPostDto, final String email) {
     final var user =
-        userRepository
-            .findByEmail(principal.getName())
-            .orElseThrow(() -> new RuntimeException("User not found"));
+        userRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("User not found"));
 
     final var tags =
         createPostDto.getTags().stream()
@@ -64,6 +61,11 @@ public class PostService {
         throw new RuntimeException(e);
       }
     }
+    return savedPost;
+  }
+
+  public Post get(final Long id) {
+    return postRepository.findById(id).orElseThrow(() -> new RuntimeException("Post not found"));
   }
 
   public void delete(final Long id) {
@@ -82,12 +84,9 @@ public class PostService {
     IOUtils.copy(is, response.getOutputStream());
   }
 
-  public String buyPost(
-      final Long id, final HttpServletRequest request, final Principal principal) {
+  public String buyPost(final Long id, final HttpServletRequest request, final String email) {
     final var user =
-        userRepository
-            .findByEmail(principal.getName())
-            .orElseThrow(() -> new RuntimeException("User not found"));
+        userRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("User not found"));
     final var post =
         postRepository.findById(id).orElseThrow(() -> new RuntimeException("Post not found"));
 

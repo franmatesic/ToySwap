@@ -29,7 +29,6 @@ public class ApiController {
   private final TagRepository tagRepository;
   private final UserRepository userRepository;
   private final CreditCardRepository creditCardRepository;
-  private final PostImageRepository postImageRepository;
 
   private final PostService postService;
   private final ProfileService profileService;
@@ -176,7 +175,7 @@ public class ApiController {
   @PostMapping("/post")
   public ResponseEntity<Void> createPost(
       @Valid @RequestBody CreatePostDto createPostDto, Principal principal) {
-    postService.createPost(createPostDto, principal);
+    postService.createPost(createPostDto, principal.getName());
     return ResponseEntity.status(HttpStatus.CREATED).build();
   }
 
@@ -191,7 +190,7 @@ public class ApiController {
   @PostMapping("/buy/{id}")
   public ResponseEntity<String> buyPost(
       @PathVariable("id") Long id, HttpServletRequest request, Principal principal) {
-    final var result = postService.buyPost(id, request, principal);
+    final var result = postService.buyPost(id, request, principal.getName());
     final var response = result.contains("messages") ? "Successful" : "Error";
     return ResponseEntity.ok(response);
   }

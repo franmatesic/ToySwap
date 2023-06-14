@@ -21,14 +21,12 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class PostController {
 
-  private final PostRepository postRepository;
   private final TagRepository tagRepository;
   private final PostService postService;
 
   @GetMapping("/{id}")
   public String getPost(@PathVariable("id") Long id, Model model) {
-    final var post =
-        postRepository.findById(id).orElseThrow(() -> new RuntimeException("Post not found"));
+    final var post = postService.get(id);
     model.addAttribute("post", post);
     model.addAttribute("newMessage", MessageDto.builder().build());
     return "post";
@@ -49,7 +47,7 @@ public class PostController {
     if (result.hasErrors()) {
       return "create-post";
     }
-    postService.createPost(createPostDto, principal);
+    postService.createPost(createPostDto, principal.getName());
 
     return "redirect:/home";
   }
@@ -59,7 +57,7 @@ public class PostController {
     if (Objects.isNull(principal)) {
       return "redirect:/login";
     }
-    return postService.buyPost(id, request, principal);
+    return postService.buyPost(id, request, principal.getName());
   }
 
   @PostMapping("/delete/{id}")

@@ -9,6 +9,7 @@ import hr.algebra.toyswap.model.post.Condition;
 import hr.algebra.toyswap.model.post.Post;
 import hr.algebra.toyswap.model.post.Tag;
 import java.math.BigDecimal;
+import java.util.Collections;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,6 +40,7 @@ class PostConverterTest {
         .price(BigDecimal.TEN)
         .condition(Condition.SHORT_USED)
         .tags(tags)
+        .images(Collections.emptyList())
         .build();
   }
 
@@ -54,6 +56,7 @@ class PostConverterTest {
         .price(BigDecimal.TEN)
         .condition(Condition.SHORT_USED)
         .tags(tags)
+        .imageIds(Collections.emptyList())
         .build();
   }
 }

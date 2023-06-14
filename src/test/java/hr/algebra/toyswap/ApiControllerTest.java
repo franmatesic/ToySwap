@@ -1,18 +1,20 @@
 package hr.algebra.toyswap;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import hr.algebra.toyswap.dto.AuthResponseDto;
-import hr.algebra.toyswap.dto.LoginDto;
-import hr.algebra.toyswap.dto.RegisterDto;
+import hr.algebra.toyswap.dto.*;
+import hr.algebra.toyswap.exception.AuthException;
 import hr.algebra.toyswap.model.user.User;
 import hr.algebra.toyswap.model.user.UserRole;
+import hr.algebra.toyswap.repository.PostRepository;
+import hr.algebra.toyswap.repository.TagRepository;
 import hr.algebra.toyswap.repository.UserRepository;
+import java.util.List;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -40,6 +42,8 @@ class ApiControllerTest {
   @Autowired private ObjectMapper objectMapper;
 
   @Autowired private UserRepository userRepository;
+  @Autowired private PostRepository postRepository;
+  @Autowired private TagRepository tagRepository;
 
   private User testUser;
 
@@ -50,7 +54,9 @@ class ApiControllerTest {
 
   @AfterAll
   public void cleanup() {
-    userRepository.delete(testUser);
+    if (testUser != null) {
+      userRepository.delete(testUser);
+    }
   }
 
   @Test
@@ -62,7 +68,6 @@ class ApiControllerTest {
             post("/api/login")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(body)))
-        .andDo(print())
         .andExpect(status().isOk())
         .andExpect(
             result -> {
@@ -91,10 +96,69 @@ class ApiControllerTest {
             post("/api/register")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(body)))
-        .andDo(print())
         .andExpect(status().isOk())
         .andExpect(content().string("User registered successfully!"));
 
     testUser = userRepository.findByEmail(body.getEmail()).orElse(null);
+  }
+
+  @Test
+  void shouldFailToRegister() throws Exception {
+    final var body =
+        RegisterDto.builder()
+            .email("admin@toyswap.com")
+            .firstName("Test")
+            .lastName("Testić")
+            .phoneNumber("0919189777")
+            .password("pass")
+            .build();
+
+    mockMvc
+        .perform(
+            post("/api/register")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(body)))
+        .andExpect(status().isBadRequest())
+        .andExpect(
+            result -> {
+              assertTrue(result.getResolvedException() instanceof AuthException);
+              assertEquals("Email already in use", result.getResolvedException().getMessage());
+            });
+  }
+
+  @Test
+  void shouldGetAllTags() throws Exception {
+    final var tagCount = tagRepository.count();
+
+    mockMvc
+        .perform(get("/api/tags"))
+        .andExpect(status().isOk())
+        .andExpect(
+            result -> {
+              final var response =
+                  objectMapper.readValue(
+                      result.getResponse().getContentAsString(),
+                      (Class<List<TagDto>>) (Class<?>) List.class);
+              assertFalse(response.isEmpty());
+              assertEquals(response.size(), tagCount);
+            });
+  }
+
+  @Test
+  void shouldGetAllPosts() throws Exception {
+    final var postCount = postRepository.findAllByDeactivatedAtIsNull().size();
+
+    mockMvc
+        .perform(get("/api/posts"))
+        .andExpect(status().isOk())
+        .andExpect(
+            result -> {
+              final var response =
+                  objectMapper.readValue(
+                      result.getResponse().getContentAsString(),
+                      (Class<List<PostDto>>) (Class<?>) List.class);
+              assertFalse(response.isEmpty());
+              assertEquals(response.size(), postCount);
+            });
   }
 }

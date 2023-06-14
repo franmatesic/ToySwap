@@ -40,4 +40,13 @@ public class CreditCard {
   @Column(name = "created_at")
   @CreationTimestamp
   private LocalDateTime createdAt;
+
+  public String getMaskedNumber() {
+    return maskDigits(number);
+  }
+
+  private String maskDigits(final String input) {
+    final var last = input.substring(12);
+    return String.format("%12s", last).replace(" ", "*");
+  }
 }

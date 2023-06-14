@@ -8,12 +8,16 @@
 
         <div class="d-flex ms-auto">
 
-            <ul class="navbar-nav gap-3" sec:authorize="isAuthenticated()">
+            <ul class="navbar-nav gap-3 align-items-center" sec:authorize="isAuthenticated()">
                 <li class="nav-item">
                     <a class="nav-link" href="/messages">Poruke</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="/post/new">Nova objava</a>
+                </li>
+                <li class="nav-item">
+                    <span class="badge fs-5" style="background-color: #5F438D"
+                          th:text="${#authentication.principal.currency + '€'}"></span>
                 </li>
 
                 <li class="nav-item dropdown">

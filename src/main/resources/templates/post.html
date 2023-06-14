@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="hr" xmlns:th="http://www.w3.org/1999/xhtml" xmlns:sec="http://www.w3.org/1999/xhtml">
+<html lang="hr" xmlns:sec="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width">
@@ -16,60 +16,90 @@
 
         <div class="container">
 
-            <div class="d-flex gap-3 p-5">
+            <div class="row py-4 gx-5">
 
-                <div id="carouselExampleIndicators" class="carousel slide">
-                    <div class="carousel-indicators">
-                        <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active" aria-current="true"
-                                aria-label="Slide 1"></button>
-                        <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1" aria-label="Slide 2"></button>
-                        <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2" aria-label="Slide 3"></button>
+                <div class="col d-flex flex-column gap-3">
+                    <div id="carouselPost" class="carousel carousel-dark slide">
+                        <div class="carousel-indicators">
+                            <th:block th:each="image,i : ${post.images}">
+                                <button type="button" data-bs-target="#carouselPost"
+                                        th:attr="aria-current=${i.index == 0},data-bs-slide-to=${i.index},aria-label='Slide ' + ${i.index + 1}"
+                                        th:class="${i.index == 0 ? 'active' : ''}"></button>
+                            </th:block>
+                        </div>
+                        <div class="carousel-inner">
+                            <th:block th:each="image,i : ${post.images}">
+                                <div th:class="'carousel-item ' + ${i.index == 0 ? 'active' : ''}">
+                                    <img width="600" height="300" th:src="@{'/post/image/' + ${image.id}}" alt="image"/>
+                                </div>
+                            </th:block>
+                        </div>
+                        <button class="carousel-control-prev" type="button" data-bs-target="#carouselPost" data-bs-slide="prev">
+                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Previous</span>
+                        </button>
+                        <button class="carousel-control-next" type="button" data-bs-target="#carouselPost" data-bs-slide="next">
+                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Next</span>
+                        </button>
                     </div>
-                    <div class="carousel-inner">
-                        <th:block th:each="image,i : ${post.images}">
-                            <div th:class="'carousel-item ' + ${i.index == 0 ? 'active' : ''}">
-                                <img class="rounded border" width="300" height="300"
-                                     th:src="@{'/post/image/' + ${image.id}}" alt="image"/>
-                            </div>
-                        </th:block>
-                    </div>
-                    <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
-                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                        <span class="visually-hidden">Previous</span>
-                    </button>
-                    <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
-                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                        <span class="visually-hidden">Next</span>
-                    </button>
+
+                    <form method="post" th:object="${newMessage}" class="d-flex gap-2 p-2" sec:authorize="isAuthenticated()"
+                          th:if="${#authentication.principal.id != post.user.id}"
+                          th:action="@{'/messages/new/' + ${post.user.id}}">
+
+                        <input class="form-control me-1" name="content" th:field="*{content}" placeholder="Poruka"/>
+                        <button type="submit" class="btn btn-primary text-light">Pošalji</button>
+                    </form>
                 </div>
 
-                <div class="d-flex flex-column lh-lg">
-                    <span class="fs-1" th:text="${post.title}">Medo</span>
-                    <b>Opis:</b>
-                    <span th:text="${post.description}">Plisana igracka medvijedica za dijecu od 3 do 6 godina</span>
-                    <span class="fs-3" th:text="${post.condition.croatian}">Kratko koristeno</span>
-                    <span class="fs-4" th:text="${post.getFormattedPrice()}">100.00 Kn</span>
+                <div class="col d-flex flex-column gap-3">
+                    <div class="d-flex flex-column">
 
-                    <div class="d-flex gap-2">
-                        <span th:text="${post.user.firstName}">Maja</span>
-                        <span th:if="${post.user.lastName}" th:text="${post.user.lastName}">Majic</span>
-                        <span> | </span>
-                        <span th:text="${post.user.phoneNumber}"> +385 98 345 765</span>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="fs-1" th:text="${post.title}">Medo</span>
+                            <span class="badge fs-4" style="background-color: #6f42c1" th:text="${post.condition.croatian}">Kratko koristeno</span>
+                        </div>
+
+                        <b>Opis:</b>
+                        <span th:text="${post.description}">Plisana igracka medvijedica za dijecu od 3 do 6 godina</span>
+
+                        <div class="d-flex align-items-center gap-2 my-4">
+                            <span class="badge text-bg-primary fs-6" th:each="tag : ${post.tags}" th:text="${tag.name}"></span>
+                        </div>
+
+                        <span class="fs-4" th:text="${post.getFormattedPrice()}">100.00 Kn</span>
+
+                        <div class="d-flex gap-2 mt-2">
+                            <span th:text="${post.user.firstName}">Maja</span>
+                            <span th:if="${post.user.lastName}" th:text="${post.user.lastName}">Majic</span>
+                            <span> | </span>
+                            <span th:text="${post.user.phoneNumber}"> +385 98 345 765</span>
+                        </div>
+
+                        <span th:text="${#temporals.format(post.createdAt, 'dd.MM.yyyy HH:mm:ss')}">Objavljeno: 12.12.2022</span>
                     </div>
 
-                    <div class="d-flex align-items-center gap-2 my-2">
-                        <span class="badge text-bg-primary" th:each="tag : ${post.tags}" th:text="${tag.name}"></span>
-                    </div>
+                    <div th:if="${post.deactivatedAt == null}">
+                        <form method="post" th:object="${buyItem}" th:if="${#authentication.principal.id != post.user.id}"
+                              th:action="@{'/post/buy/' + ${post.id}}"
+                              sec:authorize="isAuthenticated()" class="d-flex justify-content-center">
+                            <button type="submit" class="btn btn-primary text-light w-50">Kupi</button>
+                        </form>
+                        <form method="post" sec:authorize="!isAuthenticated()" th:action="@{'/post/buy/' + ${post.id}}"
+                              class="d-flex justify-content-center">
+                            <button type="submit" class="btn btn-primary text-light w-50">Kupi</button>
+                        </form>
 
-                    <span th:text="${#temporals.format(post.createdAt, 'dd.MM.yyyy HH:mm:ss')}">Objavljeno: 12.12.2022</span>
+                        <form method="post" th:if="${#authentication.principal.id == post.user.id}" th:action="@{'/post/delete/' + ${post.id}}"
+                              class="d-flex justify-content-center" sec:authorize="isAuthenticated()">
+                            <button type="submit" class="btn btn-danger text-light w-50">Obriši</button>
+                        </form>
+                    </div>
+                    <h3 class="text-secondary" th:if="${post.deactivatedAt != null}"
+                        th:text="${post.buyer == null ? 'Deaktivirana objava' : ('Kupio: ' + post.buyer.firstName + ' ' + post.buyer.lastName)}"></h3>
                 </div>
             </div>
-
-            <form method="post" th:object="${newMessage}" th:action="@{'/messages/new/' + ${post.user.id}}" class="d-flex gap-2 p-2"
-                  sec:authorize="isAuthenticated()">
-                <input class="form-control me-1" name="content" th:field="*{content}" placeholder="Poruka"/>
-                <button type="submit" class="btn btn-primary text-light">Pošalji</button>
-            </form>
         </div>
     </div>
 

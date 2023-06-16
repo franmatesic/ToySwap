@@ -55,7 +55,7 @@ public class WebSecurityConfig {
         .authorizeHttpRequests()
         .requestMatchers("/admin/**")
         .hasAuthority("ADMIN")
-        .requestMatchers("/api/login", "/api/register", "/api/posts")
+        .requestMatchers("/api/login", "/api/register", "/api/posts", "/api/post/**")
         .permitAll()
         .requestMatchers(
             "/",

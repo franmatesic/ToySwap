@@ -9,6 +9,7 @@ import hr.algebra.toyswap.exception.AuthException;
 import hr.algebra.toyswap.model.user.User;
 import hr.algebra.toyswap.model.user.UserRole;
 import hr.algebra.toyswap.repository.UserRepository;
+import java.io.IOException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -16,49 +17,54 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
-
 @Service
 @RequiredArgsConstructor
 public class ApiAuthService {
 
-    private final AuthenticationManager authenticationManager;
-    private final UserRepository userRepository;
-    private final PasswordEncoder passwordEncoder;
-    private final JwtTokenUtils jwtTokenUtils;
+  private final AuthenticationManager authenticationManager;
+  private final UserRepository userRepository;
+  private final PasswordEncoder passwordEncoder;
+  private final JwtTokenUtils jwtTokenUtils;
 
-    public AuthResponseDto login(final LoginDto loginDto) {
-        final var auth = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginDto.getEmail(), loginDto.getPassword()));
-        SecurityContextHolder.getContext().setAuthentication(auth);
-
-        final var userDetails = (UserDetailsImpl) auth.getPrincipal();
-        final var token = jwtTokenUtils.generateToken(auth);
-
-        return AuthResponseDto.builder()
-                .token(token)
-                .user(userDetails)
-                .build();
+  public AuthResponseDto login(final LoginDto loginDto) {
+    final var user = userRepository.findByEmail(loginDto.getEmail());
+    if (user.isEmpty()) {
+      return AuthResponseDto.builder().error("User not found").build();
     }
 
-    public void register(final RegisterDto registerDto)
-            throws IOException {
-        if (userRepository.existsByEmail(registerDto.getEmail())) {
-            throw new AuthException("Email already in use");
-        }
-        final var user =
-                User.builder()
-                        .email(registerDto.getEmail())
-                        .password(passwordEncoder.encode(registerDto.getPassword()))
-                        .firstName(registerDto.getFirstName())
-                        .lastName(registerDto.getLastName())
-                        .phoneNumber(registerDto.getPhoneNumber())
-                        .enabled(true)
-                        .profilePicture(
-                                registerDto.getProfilePicture() != null
-                                        ? registerDto.getProfilePicture().getBytes()
-                                        : null)
-                        .role(UserRole.USER)
-                        .build();
-        userRepository.save(user);
+    if (!passwordEncoder.matches(loginDto.getPassword(), user.get().getPassword())) {
+      return AuthResponseDto.builder().error("Wrong password").build();
     }
+
+    final var auth =
+        authenticationManager.authenticate(
+            new UsernamePasswordAuthenticationToken(loginDto.getEmail(), loginDto.getPassword()));
+    SecurityContextHolder.getContext().setAuthentication(auth);
+
+    final var userDetails = (UserDetailsImpl) auth.getPrincipal();
+    final var token = jwtTokenUtils.generateToken(auth);
+
+    return AuthResponseDto.builder().token(token).user(userDetails).build();
+  }
+
+  public void register(final RegisterDto registerDto) throws IOException {
+    if (userRepository.existsByEmail(registerDto.getEmail())) {
+      throw new AuthException("Email already in use");
+    }
+    final var user =
+        User.builder()
+            .email(registerDto.getEmail())
+            .password(passwordEncoder.encode(registerDto.getPassword()))
+            .firstName(registerDto.getFirstName())
+            .lastName(registerDto.getLastName())
+            .phoneNumber(registerDto.getPhoneNumber())
+            .enabled(true)
+            .profilePicture(
+                registerDto.getProfilePicture() != null
+                    ? registerDto.getProfilePicture().getBytes()
+                    : null)
+            .role(UserRole.USER)
+            .build();
+    userRepository.save(user);
+  }
 }

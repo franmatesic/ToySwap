@@ -3,6 +3,7 @@ package hr.algebra.toyswap.service;
 import hr.algebra.toyswap.auth.UserDetailsImpl;
 import hr.algebra.toyswap.dto.LoginDto;
 import hr.algebra.toyswap.dto.RegisterDto;
+import hr.algebra.toyswap.exception.AuthException;
 import hr.algebra.toyswap.model.user.User;
 import hr.algebra.toyswap.model.user.UserRole;
 import hr.algebra.toyswap.repository.UserRepository;
@@ -31,6 +32,11 @@ public class AuthService {
       result.rejectValue("email", "login.email", "Korisnik ne postoji");
       return "login";
     }
+    if (!passwordEncoder.matches(loginDto.getPassword(), user.get().getPassword())) {
+      result.rejectValue("password", "login.password", "Kriva lozinka");
+      return "login";
+    }
+
     authenticate(UserDetailsImpl.build(user.get()), request);
     return "redirect:/home";
   }
@@ -61,6 +67,19 @@ public class AuthService {
 
     authenticate(UserDetailsImpl.build(user), request);
     return "redirect:/home";
+  }
+
+  public void updateResetPasswordToken(final String email, final String token) {
+    final var user =
+        userRepository.findByEmail(email).orElseThrow(() -> new AuthException("User not found"));
+    user.setResetPasswordToken(token);
+    userRepository.save(user);
+  }
+
+  public void updatePassword(final User user, final String password) {
+    user.setPassword(passwordEncoder.encode(password));
+    user.setResetPasswordToken(null);
+    userRepository.save(user);
   }
 
   public void logout(final HttpServletRequest request) {

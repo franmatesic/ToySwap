@@ -1,6 +1,7 @@
 package hr.algebra.toyswap.controller;
 
 import hr.algebra.toyswap.dto.CreateCardDto;
+import hr.algebra.toyswap.dto.MessageDto;
 import hr.algebra.toyswap.repository.CreditCardRepository;
 import hr.algebra.toyswap.repository.UserRepository;
 import hr.algebra.toyswap.service.ProfileService;
@@ -32,6 +33,7 @@ public class ProfileController {
 
     model.addAttribute("profile", user);
     model.addAttribute("cards", cards);
+    model.addAttribute("newMessage", MessageDto.builder().build());
 
     return "profile";
   }

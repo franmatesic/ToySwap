@@ -20,41 +20,64 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @RequiredArgsConstructor
 public class WebSecurityConfig {
 
-    private final UserDetailsServiceImpl userDetailsServiceImpl;
-    private final AuthTokenFilter authTokenFilter;
-    private final AuthEntryPoint authEntryPoint;
+  private final UserDetailsServiceImpl userDetailsServiceImpl;
+  private final AuthTokenFilter authTokenFilter;
+  private final AuthEntryPoint authEntryPoint;
 
-    @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
-        return authenticationConfiguration.getAuthenticationManager();
-    }
+  @Bean
+  public AuthenticationManager authenticationManager(
+      AuthenticationConfiguration authenticationConfiguration) throws Exception {
+    return authenticationConfiguration.getAuthenticationManager();
+  }
 
-    @Bean
-    public DaoAuthenticationProvider authenticationProvider() {
-        final var authProvider = new DaoAuthenticationProvider();
-        authProvider.setUserDetailsService(userDetailsServiceImpl);
-        authProvider.setPasswordEncoder(passwordEncoder());
-        return authProvider;
-    }
+  @Bean
+  public DaoAuthenticationProvider authenticationProvider() {
+    final var authProvider = new DaoAuthenticationProvider();
+    authProvider.setUserDetailsService(userDetailsServiceImpl);
+    authProvider.setPasswordEncoder(passwordEncoder());
+    return authProvider;
+  }
 
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
+  @Bean
+  public PasswordEncoder passwordEncoder() {
+    return new BCryptPasswordEncoder();
+  }
 
-    @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http.cors().and().csrf().disable()
-                .exceptionHandling().authenticationEntryPoint(authEntryPoint).and()
-                .authorizeHttpRequests()
-                .requestMatchers("/admin/**").hasAuthority("ADMIN")
-                .requestMatchers("/api/login", "/api/register", "/api/posts").permitAll()
-                .requestMatchers("/", "/home", "/login", "/logout", "/register", "/images/**", "/post/**").permitAll()
-                .anyRequest().authenticated().and()
-                .logout().logoutSuccessUrl("/home").permitAll().and()
-                .authenticationProvider(authenticationProvider())
-                .addFilterBefore(authTokenFilter, UsernamePasswordAuthenticationFilter.class);
+  @Bean
+  public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    http.cors()
+        .and()
+        .csrf()
+        .disable()
+        .exceptionHandling()
+        .authenticationEntryPoint(authEntryPoint)
+        .and()
+        .authorizeHttpRequests()
+        .requestMatchers("/admin/**")
+        .hasAuthority("ADMIN")
+        .requestMatchers("/api/login", "/api/register", "/api/posts")
+        .permitAll()
+        .requestMatchers(
+            "/",
+            "/home",
+            "/login",
+            "/logout",
+            "/register",
+            "/forgotPassword",
+            "/resetPassword/**",
+            "/images/**",
+            "/post/**")
+        .permitAll()
+        .anyRequest()
+        .authenticated()
+        .and()
+        .logout()
+        .logoutSuccessUrl("/home")
+        .permitAll()
+        .and()
+        .authenticationProvider(authenticationProvider())
+        .addFilterBefore(authTokenFilter, UsernamePasswordAuthenticationFilter.class);
 
-        return http.build();
-    }
+    return http.build();
+  }
 }

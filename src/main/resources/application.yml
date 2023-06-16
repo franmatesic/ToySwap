@@ -26,11 +26,21 @@ spring:
       name: admin
       password: pass
 
+  mail:
+    host: smtp.gmail.com
+    port: 465
+    username: toyswap.mail@gmail.com
+    password: dicfeaqelimczomc
+    test-connection: true
+
+    properties:
+      mail:
+        smtp:
+          auth: true
+          ssl:
+            enable: true
+
 app:
   jwt:
     secret: toyswap-application-2023
     expiration: 86400000
-
-  paypal:
-    client: AeUltOo8qdK1tu8O7-tEr0pyuHyWM23n3G5Z7qtps7CuHwSIw6YgGI9bv66HoLN-yhFkXKYCPYc9j2kT
-    secret: ELvsit9stmTf8ZiGOZjLX6S8FlDAzEPC8PvIF-wNZOGtDxUNJEFVpRLNiSZGm7UNWuzskki66lDI6jdy

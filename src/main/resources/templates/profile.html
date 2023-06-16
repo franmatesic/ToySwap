@@ -16,7 +16,7 @@
 
         <div class="container">
 
-            <div class="d-flex align-items-center gap-5 mt-5">
+            <div class="d-flex align-items-center gap-5 mt-5 mb-5">
 
                 <img class="border border-2 rounded-circle" src="../static/images/profile.png"
                      th:src="@{'/profile/image/' + ${profile.id}}"
@@ -144,6 +144,12 @@
                 </th:block>
                 </tbody>
             </table>
+
+            <h3 class="mt-5">Trebaš pomoć?</h3>
+            <form method="post" th:object="${newMessage}" class="d-flex gap-2 p-2" th:action="@{'/messages/new/1'}">
+                <input class="form-control me-1" name="content" th:field="*{content}" placeholder="Poruka"/>
+                <button type="submit" class="btn btn-primary text-light">Pošalji</button>
+            </form>
         </div>
     </div>
 

@@ -50,6 +50,9 @@ public class User {
   @Column(name = "profile_picture")
   private byte[] profilePicture;
 
+  @Column(name = "reset_password_token")
+  private String resetPasswordToken;
+
   @OneToMany(mappedBy = "user")
   private List<Post> posts;
 
